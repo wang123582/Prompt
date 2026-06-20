@@ -76,5 +76,3 @@ _（当前无待确认问题）_
 
 <!-- AI 每次执行完成后追加一条，格式如下 -->
 <!-- - YYYY-MM-DD: [模块名] 做了什么，有什么关键决策或注意事项 -->
-
-- 2026-06-20: [vision_catch_controller] 新增 `goal_is_relative` 参数(默认 true)，视觉相对偏移由底盘 +odom 转 odom 世界系(**只 x/y 平移、不做 yaw 旋转**)，编译通过。**代码改在 sunrise 实机** `/home/sunrise/USB2CAN_motor`(用户指定)，非手册写的 111。假设：以当前车体 odom 为原点、不旋转、话题仍 `/auto/goal_pose` 但语义改为相对偏移。待 nvidia 发相对偏移 + 上车验证。
