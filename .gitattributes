@@ -1,0 +1,9 @@
+# 换行符固定，别让 autocrlf 把脚本弄坏
+* text=auto eol=lf
+
+# Windows 批处理必须 CRLF：cmd.exe 对 LF-only 的 .bat 有 goto/标签解析问题
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Shell 脚本必须 LF：CRLF 会让 shebang 变成 /usr/bin/env^M
+*.sh  text eol=lf
