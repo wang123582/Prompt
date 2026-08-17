@@ -81,6 +81,21 @@ if (-not $codeRoot) {
     if ($r -eq 'deleted')  { Write-Host '  - 已删除: ~/.claude/CLAUDE.md   整份都是本脚本生成的' }
     if ($r -eq 'stripped') { Write-Host '  - 已移除标记块，原有内容保留' }
 
+    # ---------- 撤掉 wf 插件链接 ----------
+    $wfLink = Join-Path (Join-Path (Join-Path $env:USERPROFILE '.claude') 'skills') 'wf'
+    if (Test-Path -LiteralPath $wfLink) {
+        $item = Get-Item -LiteralPath $wfLink -Force
+        if ($item.LinkType) {
+            [System.IO.Directory]::Delete($wfLink, $false)       # 只删链接，规则中心的 wf/ 原样保留
+            Write-Host '  - 已移除链接: ~/.claude/skills/wf'
+        } else {
+            Remove-Item -LiteralPath $wfLink -Recurse -Force
+            Write-Host '  - 已删除复制版: ~/.claude/skills/wf'
+        }
+    } else {
+        Write-Host '  ! 没有 ~/.claude/skills/wf，跳过'
+    }
+
     Write-Host ''
     Write-Host '============================================================'
     Write-Host '  全局规则已撤销'

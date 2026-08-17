@@ -86,6 +86,18 @@ if [ -z "$CODE_ROOT" ]; then
     stripped) echo "  - 已移除标记块，原有内容保留" ;;
   esac
 
+  # ---------- 撤掉 wf 插件链接 ----------
+  WF_LINK="$HOME/.claude/skills/wf"
+  if [ -L "$WF_LINK" ]; then
+    rm -f "$WF_LINK"                   # 只删软链，规则中心的 wf/ 原样保留
+    echo "  - 已移除链接: ~/.claude/skills/wf"
+  elif [ -d "$WF_LINK" ]; then
+    rm -rf "$WF_LINK"
+    echo "  - 已删除复制版: ~/.claude/skills/wf"
+  else
+    echo "  ! 没有 ~/.claude/skills/wf，跳过"
+  fi
+
   echo
   echo "============================================================"
   echo "  全局规则已撤销"

@@ -10,7 +10,7 @@
 `design.md` / `USAGE.md` / `tasks/` 都在本目录，**不自动加载**，按 `CONTEXT.md`「文档索引」按需读取。
 
 ## 红线：规则只读，状态才可写
-- 规则中心的 `RULES.md`、`PROMPT.md`、`CLAUDE.md`、`templates/` 是**只读规则/模板**，禁止修改（已做系统级保护）。
+- 规则中心的 `RULES.md`、`PROMPT.md`、`CLAUDE.md`、`templates/` 是**只读规则/模板**，禁止修改（除非用户明确授权改规则本体）。
 - **只允许写本项目自己的状态**：本目录下的 `CONTEXT.md`、`design.md`、`tasks/`、`USAGE.md`。
 - **绝不读/写别的项目**的状态，避免串味。
 - **代码写在本目录**（本项目代码根），不写进规则中心。

@@ -111,6 +111,30 @@ if [ -z "$CODE_ROOT" ]; then
     appended) echo "  ~ 已追加标记块到 ~/.claude/CLAUDE.md，原有内容保留" ;;
   esac
 
+  # ---------- wf 插件：软链到 ~/.claude/skills/wf ----------
+  WF_SRC="$PROMPT_ROOT/wf"
+  WF_LINK="$CLAUDE_DIR/skills/wf"
+  if [ -d "$WF_SRC" ]; then
+    mkdir -p "$CLAUDE_DIR/skills"
+    if [ -L "$WF_LINK" ]; then
+      rm -f "$WF_LINK"                 # 只删软链本身，不碰目标
+    elif [ -e "$WF_LINK" ]; then
+      echo "  ! ~/.claude/skills/wf 已存在且不是软链，跳过（请手动处理）"
+      WF_LINK=""
+    fi
+    if [ -n "$WF_LINK" ]; then
+      if ln -s "$WF_SRC" "$WF_LINK" 2>/dev/null; then
+        echo "  + 已链接: ~/.claude/skills/wf  ->  <规则中心>/wf"
+        echo "    8 个技能 + 规则中心只读保护 hook 已就位；输 /wf 加 Tab 可见"
+      else
+        echo "  ! 软链建立失败，回退为复制（以后改 wf/ 需重跑本脚本才生效）"
+        cp -R "$WF_SRC" "$WF_LINK"
+      fi
+    fi
+  else
+    echo "  ! 规则中心下没有 wf/ 目录，跳过技能安装"
+  fi
+
   echo
   echo "============================================================"
   echo "  全局规则安装完成"
