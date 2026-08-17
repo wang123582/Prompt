@@ -14,7 +14,9 @@ templates/           # 新项目空骨架 → 拷到项目代码根
   project-CLAUDE.md  CONTEXT.md  design.md  USAGE.md  tasks/
 wf/                  # ★ 工作流插件，junction 到 ~/.claude/skills/wf
   .claude-plugin/plugin.json
-  hooks/hooks.json  hooks/guard-rules.js    # 规则中心只读保护（PreToolUse 硬拒）
+  hooks/hooks.json
+  hooks/session-start.js                 # 开场注入：目标锚定 + 当前任务 + 该跑哪个技能
+  hooks/guard-rules.js                   # 规则中心只读保护（PreToolUse 硬拒）
   skills/{intake,req,design,split,exec,check,wrap,night}/SKILL.md
 install.ps1|sh|bat   # 全局注入规则 + 建 junction + 给项目建状态骨架
 uninstall.ps1|sh|bat # 撤除
