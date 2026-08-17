@@ -110,6 +110,39 @@ if (-not $codeRoot) {
     if ($r -eq 'updated')  { Write-Host '  ~ 已更新 ~/.claude/CLAUDE.md 中的标记块' }
     if ($r -eq 'appended') { Write-Host '  ~ 已追加标记块到 ~/.claude/CLAUDE.md，原有内容保留' }
 
+    # ---------- wf 插件：junction 到 ~/.claude/skills/wf ----------
+    $skillsDir = Join-Path $claudeDir 'skills'
+    $wfSrc     = Join-Path $PromptRoot 'wf'
+    $wfLink    = Join-Path $skillsDir 'wf'
+    if (Test-Path -LiteralPath $wfSrc -PathType Container) {
+        if (-not (Test-Path -LiteralPath $skillsDir)) {
+            New-Item -ItemType Directory -Path $skillsDir | Out-Null
+        }
+        $skip = $false
+        if (Test-Path -LiteralPath $wfLink) {
+            $item = Get-Item -LiteralPath $wfLink -Force
+            if ($item.LinkType) {
+                [System.IO.Directory]::Delete($wfLink, $false)   # 只删链接本身，不碰目标
+            } else {
+                Write-Host '  ! ~/.claude/skills/wf 已存在且不是链接，跳过（请手动处理）'
+                $skip = $true
+            }
+        }
+        if (-not $skip) {
+            try {
+                New-Item -ItemType Junction -Path $wfLink -Target $wfSrc -ErrorAction Stop | Out-Null
+                Write-Host '  + 已链接: ~/.claude/skills/wf  ->  <规则中心>\wf'
+                Write-Host '    8 个技能 + 规则中心只读保护 hook 已就位；输 /wf 加 Tab 可见'
+            } catch {
+                Write-Host ('  ! junction 建立失败: ' + $_.Exception.Message)
+                Write-Host '    回退为复制（以后改 wf/ 需重跑本脚本才生效）'
+                Copy-Item -LiteralPath $wfSrc -Destination $wfLink -Recurse -Force
+            }
+        }
+    } else {
+        Write-Host '  ! 规则中心下没有 wf/ 目录，跳过技能安装'
+    }
+
     Write-Host ''
     Write-Host '============================================================'
     Write-Host '  全局规则安装完成'
@@ -204,6 +237,39 @@ $r = Write-Block (Join-Path $codeRoot 'CLAUDE.md') $body
 if ($r -eq 'created')  { Write-Host '  + 已创建: CLAUDE.md';             $lines.Add('claude_md=created') }
 if ($r -eq 'updated')  { Write-Host '  ~ 已更新 CLAUDE.md 中的标记块';  $lines.Add('claude_md=appended') }
 if ($r -eq 'appended') { Write-Host '  ~ 已追加标记块到原有 CLAUDE.md'; $lines.Add('claude_md=appended') }
+
+    # ---------- wf 插件：junction 到 ~/.claude/skills/wf ----------
+    $skillsDir = Join-Path $claudeDir 'skills'
+    $wfSrc     = Join-Path $PromptRoot 'wf'
+    $wfLink    = Join-Path $skillsDir 'wf'
+    if (Test-Path -LiteralPath $wfSrc -PathType Container) {
+        if (-not (Test-Path -LiteralPath $skillsDir)) {
+            New-Item -ItemType Directory -Path $skillsDir | Out-Null
+        }
+        $skip = $false
+        if (Test-Path -LiteralPath $wfLink) {
+            $item = Get-Item -LiteralPath $wfLink -Force
+            if ($item.LinkType) {
+                [System.IO.Directory]::Delete($wfLink, $false)   # 只删链接本身，不碰目标
+            } else {
+                Write-Host '  ! ~/.claude/skills/wf 已存在且不是链接，跳过（请手动处理）'
+                $skip = $true
+            }
+        }
+        if (-not $skip) {
+            try {
+                New-Item -ItemType Junction -Path $wfLink -Target $wfSrc -ErrorAction Stop | Out-Null
+                Write-Host '  + 已链接: ~/.claude/skills/wf  ->  <规则中心>\wf'
+                Write-Host '    8 个技能 + 规则中心只读保护 hook 已就位；输 /wf 加 Tab 可见'
+            } catch {
+                Write-Host ('  ! junction 建立失败: ' + $_.Exception.Message)
+                Write-Host '    回退为复制（以后改 wf/ 需重跑本脚本才生效）'
+                Copy-Item -LiteralPath $wfSrc -Destination $wfLink -Recurse -Force
+            }
+        }
+    } else {
+        Write-Host '  ! 规则中心下没有 wf/ 目录，跳过技能安装'
+    }
 
 foreach ($rel in $createdList) { $lines.Add('created=' + $rel) }
 [System.IO.File]::WriteAllLines($manifest, $lines, $Utf8)

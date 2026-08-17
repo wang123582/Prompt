@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard-rules.js\"",
+            "timeout": 15,
+            "statusMessage": "规则中心只读检查"
+          }
+        ]
+      }
+    ]
+  }
+}
