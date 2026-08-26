@@ -102,6 +102,6 @@
 
 ## 🧰 技能（流程细节在这里，用到才加载）
 
-`/wf:intake` 接活分诊 + 初始化 · `/wf:req` ①需求 · `/wf:design` ②设计 · `/wf:split` ③拆分 · `/wf:exec` ④执行 · `/wf:check` ⑤审查 · `/wf:wrap` 收尾 · `/wf:night` 夜间模式
+`/wf:intake` 接活分诊 + 初始化 · `/wf:research` ⓪资料收集 · `/wf:req` ①需求 · `/wf:design` ②设计 · `/wf:split` ③拆分 · `/wf:exec` ④执行 · `/wf:check` ⑤审查 · `/wf:wrap` 收尾 · `/wf:night` 夜间模式
 
 全流程总览见 `PROMPT.md`（只是地图，可执行细节都在技能里）。
