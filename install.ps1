@@ -143,6 +143,26 @@ if (-not $codeRoot) {
         Write-Host '  ! 规则中心下没有 wf/ 目录，跳过技能安装'
     }
 
+    # ---------- 额度守卫：statusline 落盘用量（插件改不了 statusLine，只能写 settings.json） ----------
+    # 用正斜杠绝对路径：statusLine 命令可能走 cmd 也可能走 Git Bash，两边都认
+    $env:SETTINGS = Join-Path $claudeDir 'settings.json'
+    $env:SL_CMD   = 'node "' + ((Join-Path (Join-Path (Join-Path $claudeDir 'skills') 'wf') 'hooks\usage-cache.js') -replace '\\', '/') + '"'
+    $slJs = @'
+const fs = require("fs"), p = process.env.SETTINGS;
+let s = {};
+if (fs.existsSync(p)) s = JSON.parse(fs.readFileSync(p, "utf8").replace(/^\uFEFF/, ""));
+if (s.statusLine && !String(s.statusLine.command || "").includes("usage-cache.js")) { console.log("kept"); process.exit(0); }
+s.statusLine = { type: "command", command: process.env.SL_CMD };
+fs.writeFileSync(p, JSON.stringify(s, null, 2) + "\n");
+console.log("set");
+'@
+    try { $slResult = ($slJs | & node - 2>$null) } catch { $slResult = 'fail' }
+    switch ($slResult) {
+        'set'   { Write-Host '  + 已写入 statusLine: ~/.claude/settings.json（额度守卫的数据源）' }
+        'kept'  { Write-Host '  ! settings.json 已有别的 statusLine，未覆盖；额度守卫要生效需手动并入 usage-cache.js' }
+        default { Write-Host '  ! statusLine 写入失败（需要 node），额度守卫不会生效' }
+    }
+
     Write-Host ''
     Write-Host '============================================================'
     Write-Host '  全局规则安装完成'

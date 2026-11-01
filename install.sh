@@ -135,6 +135,24 @@ if [ -z "$CODE_ROOT" ]; then
     echo "  ! 规则中心下没有 wf/ 目录，跳过技能安装"
   fi
 
+  # ---------- 额度守卫：statusline 落盘用量（插件改不了 statusLine，只能写 settings.json） ----------
+  SETTINGS="$CLAUDE_DIR/settings.json"
+  SL_CMD='node "$HOME/.claude/skills/wf/hooks/usage-cache.js"'
+  SL_RESULT="$(SETTINGS="$SETTINGS" SL_CMD="$SL_CMD" node -e '
+    const fs = require("fs"), p = process.env.SETTINGS;
+    let s = {};
+    if (fs.existsSync(p)) s = JSON.parse(fs.readFileSync(p, "utf8"));
+    if (s.statusLine && !String(s.statusLine.command || "").includes("usage-cache.js")) { console.log("kept"); process.exit(0); }
+    s.statusLine = { type: "command", command: process.env.SL_CMD };
+    fs.writeFileSync(p, JSON.stringify(s, null, 2) + "\n");
+    console.log("set");
+  ' 2>/dev/null || echo "fail")"
+  case "$SL_RESULT" in
+    set)  echo "  + 已写入 statusLine: ~/.claude/settings.json（额度守卫的数据源）" ;;
+    kept) echo "  ! settings.json 已有别的 statusLine，未覆盖；额度守卫要生效需手动并入 usage-cache.js" ;;
+    *)    echo "  ! statusLine 写入失败（需要 node），额度守卫不会生效" ;;
+  esac
+
   echo
   echo "============================================================"
   echo "  全局规则安装完成"

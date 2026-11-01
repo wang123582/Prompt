@@ -98,6 +98,19 @@ if [ -z "$CODE_ROOT" ]; then
     echo "  ! 没有 ~/.claude/skills/wf，跳过"
   fi
 
+  # ---------- 撤掉额度守卫的 statusLine（只撤我们写的那条） ----------
+  SETTINGS="$HOME/.claude/settings.json"
+  if [ -f "$SETTINGS" ] && SETTINGS="$SETTINGS" node -e '
+    const fs = require("fs"), p = process.env.SETTINGS;
+    const s = JSON.parse(fs.readFileSync(p, "utf8"));
+    if (!String((s.statusLine || {}).command || "").includes("usage-cache.js")) process.exit(1);
+    delete s.statusLine;
+    fs.writeFileSync(p, JSON.stringify(s, null, 2) + "\n");
+  ' 2>/dev/null; then
+    echo "  - 已移除 statusLine: ~/.claude/settings.json"
+  fi
+  rm -f "$HOME/.claude/wf-usage.json" "$HOME/.claude/wf-usage-notified.json"
+
   echo
   echo "============================================================"
   echo "  全局规则已撤销"
