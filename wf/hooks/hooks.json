@@ -23,6 +23,17 @@
             "statusMessage": "规则中心只读检查"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/chain-gate.js\"",
+            "timeout": 10,
+            "statusMessage": "链路图闸门检查"
+          }
+        ]
       }
     ],
     "PostToolUse": [

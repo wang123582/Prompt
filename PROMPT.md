@@ -13,21 +13,26 @@
 /wf:intake ── 分诊 ──┬─ ③ 一次性任务 → 干完即走，不初始化、不进流水线
                      └─ ①② → 初始化 → 进流水线
    ↓
-⓪ /wf:research 资料收集   中档   → design.md 第零章（内部现状 + 外部资料）
+                                                                   负责「工作顺序」哪层
+⓪ /wf:research 资料收集   中档   → design.md 第零章                 直觉 + 真样本
    ↓
-① /wf:req     需求确认   中档   → design.md 第一章
-② /wf:design  详细设计   高档   → design.md 第二章 + 第四章 ADR
-③ /wf:split   任务划分   中档   → tasks/<模块>.md + tasks/progress.md
-④ /wf:exec    执行       高档   → 代码 + 测试（主 agent 派生并行子 agent）
-⑤ /wf:check   Review     高档   → 审查 + 修复
+① /wf:req     需求确认   中档   → design.md 第一章                 问题 + 验收 + 不做什么
+② /wf:design  详细设计   高档   → 第二章 + 第四章 ADR + 代码根骨架  链路图 → 分文件 → 函数签名
+③ /wf:split   任务划分   中档   → tasks/<模块>.md + progress.md
+④ /wf:exec    执行       高档   → 代码 + 测试（并行子 agent）      写函数，真样本跑通全链
+⑤ /wf:check   Review     高档   → 审查 + 修复                      合上讲三句
    ↓
 /wf:wrap ── 每个阶段 / 模块做完都走一遍：
             多余物检测 → 更新文档 → 写下轮「当前任务」→ 提醒 git
 ```
 
+右列是 `RULES.md`「工作顺序」：流水线就是那条链落到文件上的样子，每阶段只负责它那几层。
+
 ⚠️ `⓪ /wf:research` 不止新项目走一遍：**老项目接新功能，同样先过一遍 ⓪ 再进 ①**——`/wf:req` 自己会检查「零、背景资料」是否已就绪，没有就先转 `/wf:research`。
 
 `/wf:night` 夜间模式：无人值守连续推进，**只能用户手动开启**。
+
+`/wf:learn` 学资料（书 / 文档 / 论文 / 别人的代码）的顺序：不进流水线；④exec 引导 `📖学习点` 时也走它。
 
 ---
 

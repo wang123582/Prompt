@@ -31,7 +31,7 @@
 |------|------|--------|
 | 全局 `RULES.md` | 核心规则 + 高/中/低档位定义，开会话自动加载（只读） | 自动 |
 | 中央 `PROMPT.md` | 流程地图（只读），可执行细节在技能里 | 想看全流程时 |
-| `/wf:*` 技能 | intake / req / design / split / exec / check / wrap / night | 进入对应阶段时 |
+| `/wf:*` 技能 | intake / research / req / design / split / exec / check / wrap / night / learn | 进入对应阶段时 |
 | 本目录 `design.md` | 需求 + 详细设计 + ADR | 开始新模块时 |
 | 本目录 `USAGE.md` | 使用 / 构建 / 修改参数手册 | 要跑/构建/调参时 |
 | 本目录 `tasks/progress.md` | 模块级总进度 checklist | 每次执行前确认进度 |

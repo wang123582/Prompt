@@ -7,7 +7,7 @@
 ## 目录结构
 
 ```
-RULES.md             # 唯一常驻规则：Tier0 回复格式 + 档位 + Tier1 防灾 + Tier2 连续性 + 停点
+RULES.md             # 唯一常驻规则：Tier0 回复格式 + 档位 + 教学模式 + 工作顺序 + Tier1 防灾 + Tier2 连续性 + 停点
 PROMPT.md            # 流程地图（只有全景，没有可执行细节）
 CLAUDE.md            # 本文件：规则中心的指路牌
 templates/           # 新项目空骨架 → 拷到项目代码根
@@ -17,7 +17,9 @@ wf/                  # ★ 工作流插件，junction 到 ~/.claude/skills/wf
   hooks/hooks.json
   hooks/session-start.js                 # 开场注入：目标锚定 + 当前任务 + 该跑哪个技能
   hooks/guard-rules.js                   # 规则中心只读保护（PreToolUse 硬拒）
-  skills/{intake,req,design,split,exec,check,wrap,night}/SKILL.md
+  hooks/chain-gate.js                    # 链路图闸门：项目里没有用户确认过的链路图，不许写代码文件
+  hooks/usage-guard.js + usage-cache.js  # 额度守卫（PostToolUse 提醒收尾；数据由 statusline 落盘）
+  skills/{intake,research,req,design,split,exec,check,wrap,night,learn}/SKILL.md
 install.ps1|sh|bat   # 全局注入规则 + 建 junction + 给项目建状态骨架
 uninstall.ps1|sh|bat # 撤除
 ```
@@ -39,11 +41,12 @@ install.bat                            # 全局模式：注入 ~/.claude/CLAUDE.
 install.bat <代码根目录> [项目名]        # 项目模式：给该项目建状态骨架
 ```
 
-全局模式做两件事：
+全局模式做三件事：
 1. 往 `~/.claude/CLAUDE.md` 写一段指向本目录 `RULES.md` 的引用（改规则中心即刻全局生效）。
-2. 在 `~/.claude/skills/wf` 建 junction（Windows）/ symlink（mac、Linux）指向本目录的 `wf/`——**只有一个链接，插件自带 hooks，不碰 `~/.claude/settings.json`**。
+2. 在 `~/.claude/skills/wf` 建 junction（Windows）/ symlink（mac、Linux）指向本目录的 `wf/`——**只有一个链接，插件自带 hooks**。
+3. 往 `~/.claude/settings.json` 写 `statusLine`（额度守卫的数据源；插件改不了 statusLine）。已有别的 statusLine 不覆盖。
 
-装完在任意项目里输 `/wf` + Tab 可见 8 个技能。
+装完在任意项目里输 `/wf` + Tab 可见 10 个技能。
 
 ## 在本文件夹直接开会话时
 
